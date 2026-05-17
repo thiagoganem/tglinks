@@ -26,7 +26,7 @@ export function ProfileHeader({ imageUrl, name }: ProfileHeaderProps) {
 
       {/* Subtítulo */}
       <p className="mt-1 text-sm text-slate-400 font-light tracking-wide">
-        Escolha a causa que é sua
+        Escolha a sua causa
       </p>
 
       {/* Divider decorativo */}
