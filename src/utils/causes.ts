@@ -23,7 +23,7 @@ export const CAUSES: CauseLink[] = [
     icon: AutismIcon({}),
   },
   {
-    label: "Segurança",
+    label: "Combate à pedofilia",
     url: "https://www.instagram.com/thiagoganem.seguranca/",
     icon: SecurityIcon({}),
   },
