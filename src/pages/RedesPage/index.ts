@@ -1,0 +1,1 @@
+export { RedesPage } from "./RedesPage";
