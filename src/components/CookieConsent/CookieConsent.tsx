@@ -34,9 +34,25 @@ export function CookieConsent() {
     >
       <div className="mx-auto max-w-lg rounded-2xl border border-white/10 bg-[#1a1714]/90 backdrop-blur-xl shadow-2xl shadow-black/40 p-5 sm:p-6">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-2xl" role="img" aria-label="cookie">
-            🍪
-          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-brand-500 w-6 h-6 shrink-0"
+          >
+            <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
+            <path d="M8.5 8.5v.01" />
+            <path d="M16 15.5v.01" />
+            <path d="M12 12v.01" />
+            <path d="M11 17v.01" />
+            <path d="M7 14v.01" />
+          </svg>
           <h3 className="text-sm font-semibold text-white tracking-wide">
             Aviso de Cookies
           </h3>
