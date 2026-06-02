@@ -1,7 +1,14 @@
+import { useEffect } from "react";
 import { ProfileHeader, LinkButton, InstagramButton } from "../../components";
+import { CookieConsent } from "../../components/CookieConsent";
 import { CAUSES, INSTAGRAM_PROFILE } from "../../utils";
+import { trackPageView } from "../../services/tracking";
 
 export function RedesPage() {
+  useEffect(() => {
+    trackPageView();
+  }, []);
+
   return (
     <>
       {/* Textura de grão sutil */}
@@ -56,6 +63,8 @@ export function RedesPage() {
           </footer>
         </div>
       </main>
+
+      <CookieConsent />
     </>
   );
 }

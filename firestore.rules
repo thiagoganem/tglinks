@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Clicks: qualquer um pode criar e ler
+    // NOTA: O dashboard usa autenticação por senha no frontend.
+    // Para maior segurança, considere usar Firebase Auth e
+    // restringir read para request.auth != null
+    match /clicks/{doc} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+
+    // Page Views: qualquer um pode criar e ler
+    match /pageviews/{doc} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+  }
+}

@@ -1,3 +1,5 @@
+import { trackClick } from "../../services/tracking";
+
 interface InstagramButtonProps {
   label: string;
   url: string;
@@ -5,11 +7,16 @@ interface InstagramButtonProps {
 }
 
 export function InstagramButton({ label, url, delay }: InstagramButtonProps) {
+  function handleClick() {
+    trackClick("Instagram Perfil", url);
+  }
+
   return (
     <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleClick}
       id="link-instagram-profile"
       className="relative flex items-center justify-center gap-3 rounded-2xl border border-brand-500/40
                  bg-gradient-to-r from-brand-600/20 via-brand-500/10 to-brand-600/20

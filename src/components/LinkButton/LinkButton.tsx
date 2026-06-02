@@ -1,4 +1,5 @@
 import type { CauseLink } from "../../types";
+import { trackClick } from "../../services/tracking";
 
 interface LinkButtonProps {
   cause: CauseLink;
@@ -6,6 +7,10 @@ interface LinkButtonProps {
 }
 
 export function LinkButton({ cause, delay }: LinkButtonProps) {
+  function handleClick() {
+    trackClick(cause.label, cause.url);
+  }
+
   return (
     <a
       href={cause.url}
@@ -14,6 +19,7 @@ export function LinkButton({ cause, delay }: LinkButtonProps) {
       className="link-card flex items-center gap-4 group animate-slide-up opacity-0"
       style={{ animationDelay: `${delay}ms` }}
       id={`link-${cause.label.toLowerCase().replace(/\s+/g, "-")}`}
+      onClick={handleClick}
     >
       {/* Ícone SVG */}
       <span className="flex-shrink-0 w-7 h-7 transition-transform duration-300 group-hover:scale-110">
