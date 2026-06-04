@@ -48,10 +48,10 @@ function AuthGate({ onAuth }: { onAuth: () => void }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0d0b09] via-[#1a1714] to-[#0d0b09] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0d0b09] via-[#1a1714] to-[#0d0b09] px-3 sm:px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl"
+        className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 sm:p-8 shadow-2xl"
       >
         <div className="flex items-center gap-3 mb-6">
           <svg
@@ -117,9 +117,9 @@ function InfoTooltip({ text }: { text: string }) {
         ?
       </button>
       {show && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 sm:w-64 rounded-xl border border-white/10 bg-[#1a1714]/95 backdrop-blur-xl px-3 py-2.5 text-xs text-slate-300 leading-relaxed shadow-2xl z-50 pointer-events-none animate-fade-in">
+        <div className="absolute bottom-full left-0 sm:left-1/2 sm:-translate-x-1/2 mb-2 w-48 sm:w-64 rounded-xl border border-white/10 bg-[#1a1714]/95 backdrop-blur-xl px-3 py-2.5 text-xs text-slate-300 leading-relaxed shadow-2xl z-50 pointer-events-none animate-fade-in">
           {text}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1a1714]/95 border-r border-b border-white/10 rotate-45 -mt-1" />
+          <div className="absolute top-full left-4 sm:left-1/2 sm:-translate-x-1/2 w-2 h-2 bg-[#1a1714]/95 border-r border-b border-white/10 rotate-45 -mt-1" />
         </div>
       )}
     </span>
@@ -150,16 +150,16 @@ function StatCard({
 
   return (
     <div
-      className={`rounded-2xl border bg-gradient-to-br backdrop-blur-md p-4 sm:p-5 transition-all duration-300 hover:scale-[1.02] ${accentMap[accent] || accentMap.brand}`}
+      className={`rounded-xl sm:rounded-2xl border bg-gradient-to-br backdrop-blur-md p-3 sm:p-5 transition-all duration-300 hover:scale-[1.02] ${accentMap[accent] || accentMap.brand}`}
     >
-      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-        <span className="text-lg sm:text-xl">{icon}</span>
-        <span className="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">
+      <div className="flex items-center gap-1.5 sm:gap-3 mb-1.5 sm:mb-3">
+        <span className="text-base sm:text-xl">{icon}</span>
+        <span className="text-[9px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider leading-tight">
           {label}
         </span>
-        {info && <InfoTooltip text={info} />}
+        {info && <span className="hidden sm:inline-flex"><InfoTooltip text={info} /></span>}
       </div>
-      <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
+      <p className="text-xl sm:text-3xl font-bold text-white tabular-nums">
         {value}
       </p>
     </div>
@@ -374,7 +374,7 @@ function DateRangePicker({
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-full mt-2 z-50 rounded-2xl border border-white/10 bg-[#1a1714]/98 backdrop-blur-xl shadow-2xl shadow-black/50 p-4 w-[300px] animate-fade-in"
+      className="fixed inset-x-3 sm:inset-x-auto sm:absolute sm:right-0 top-auto sm:top-full mt-2 z-50 rounded-2xl border border-white/10 bg-[#1a1714]/98 backdrop-blur-xl shadow-2xl shadow-black/50 p-3 sm:p-4 w-auto sm:w-[300px] animate-fade-in"
     >
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-3">
@@ -658,7 +658,7 @@ export function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#0d0b09] via-[#1a1714] to-[#0d0b09]">
       {/* Header */}
       <header className="border-b border-white/5 bg-white/[0.02] backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-4 sm:py-5">
+        <div className="mx-auto max-w-6xl px-3 sm:px-6 py-3 sm:py-5">
           {/* Top row: Logo + Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -831,12 +831,12 @@ export function DashboardPage() {
           </div>
 
           {/* Mobile: Period filters row */}
-          <div className="flex sm:hidden items-center gap-1.5 mt-3 overflow-x-auto pb-1">
+          <div className="flex sm:hidden items-center gap-1 mt-3 overflow-x-auto pb-1 -mx-1 px-1">
             {[7, 30, 90].map((d) => (
               <button
                 key={d}
                 onClick={() => handlePeriodClick(d)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                className={`px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-all duration-200 whitespace-nowrap ${
                   period === d
                     ? "bg-brand-500/20 text-brand-300 border border-brand-500/30"
                     : "text-slate-500 hover:text-slate-300 border border-transparent"
@@ -849,7 +849,7 @@ export function DashboardPage() {
             <div className="relative">
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-all duration-200 flex items-center gap-1 whitespace-nowrap ${
                   period === "custom"
                     ? "bg-brand-500/20 text-brand-300 border border-brand-500/30"
                     : "text-slate-500 hover:text-slate-300 border border-transparent"
@@ -882,7 +882,7 @@ export function DashboardPage() {
       </header>
 
       {/* Content */}
-      <main ref={dashboardRef} className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-8">
+      <main ref={dashboardRef} className="mx-auto max-w-6xl px-3 sm:px-6 py-4 sm:py-8">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-10 h-10 border-2 border-brand-500/30 border-t-brand-500 rounded-full animate-spin" />
@@ -901,7 +901,7 @@ export function DashboardPage() {
             )}
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-8">
               <StatCard
                 label="Total Clicks"
                 value={clicks.length.toLocaleString("pt-BR")}
@@ -950,9 +950,9 @@ export function DashboardPage() {
             </div>
 
             {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-8">
               {/* Clicks por Botão */}
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-6">
+              <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-3 sm:p-6">
                 <h2 className="text-sm font-semibold text-white mb-4 sm:mb-5 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-brand-400" />
                   Clicks por Botão
@@ -967,7 +967,7 @@ export function DashboardPage() {
               </div>
 
               {/* Regiões */}
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-6">
+              <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-3 sm:p-6">
                 <h2 className="text-sm font-semibold text-white mb-4 sm:mb-5 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   Clicks por Região
@@ -983,8 +983,8 @@ export function DashboardPage() {
             </div>
 
             {/* Timeline */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-6 mb-6 sm:mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-5 gap-2">
+            <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-3 sm:p-6 mb-4 sm:mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-5 gap-2">
                 <h2 className="text-sm font-semibold text-white flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-sky-400" />
                   Timeline — {getPeriodLabel()}
@@ -1004,7 +1004,7 @@ export function DashboardPage() {
             </div>
 
             {/* Referrers */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-6">
+            <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-3 sm:p-6">
               <h2 className="text-sm font-semibold text-white mb-4 sm:mb-5 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-violet-400" />
                 Top Referrers
