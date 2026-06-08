@@ -53,8 +53,10 @@ export function CookieConsent() {
         {/* Title */}
         <h3 className="text-base font-bold text-white mb-1">Aviso de Cookies</h3>
         <p className="text-sm text-slate-400 leading-relaxed mb-5">
-          Este site utiliza cookies anônimos para estatísticas de navegação.
-          Nenhum dado pessoal é coletado ou compartilhado.
+          Este site utiliza cookies exclusivamente para análise interna de navegação. Não coletamos
+          dados de identificação direta, como nome, e-mail, CPF ou endereço IP completo. As
+          informações são utilizadas apenas para estatísticas de uso do site e não são
+          compartilhadas com terceiros.
         </p>
 
         {/* Link para política completa */}

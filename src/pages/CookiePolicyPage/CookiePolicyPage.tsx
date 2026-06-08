@@ -52,19 +52,21 @@ export function CookiePolicyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-slate-200 mb-3">
-              Como usamos cookies?
+              Finalidade do uso de cookies
             </h2>
             <p className="mb-4">
-              Este site utiliza cookies exclusivamente para fins de análise interna de navegação.
-              Nenhum dado é compartilhado com terceiros nem utilizado para fins comerciais ou
-              publicitários.
+              Os cookies utilizados neste site têm finalidade exclusivamente analítica e estatística,
+              voltados à operação e melhoria do próprio site. Não utilizamos cookies para fins
+              publicitários, de rastreamento comportamental entre sites ou de compartilhamento com
+              terceiros.
             </p>
             <ul className="space-y-2">
               {[
                 "Contagem de acessos e visualizações de página",
-                "Identificação anônima de sessões do navegador",
+                "Identificação de sessões do navegador por meio de identificador aleatório",
                 "Estatísticas de cliques em links e botões",
-                "Geolocalização aproximada por região (cidade e estado)",
+                "Geolocalização aproximada por região (cidade e estado), sem armazenar o IP",
+                "Identificação da origem da visita (referrer e parâmetros UTM)",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="text-brand-500 mt-0.5 shrink-0">*</span>
@@ -78,16 +80,19 @@ export function CookiePolicyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-slate-200 mb-3">
-              Quais dados são coletados?
+              Quais informações são registradas?
             </h2>
+            <p className="mb-4">
+              As informações coletadas não incluem dados de identificação direta. Registramos:
+            </p>
             <ul className="space-y-2">
               {[
-                "Identificador anônimo de sessão (gerado aleatoriamente, sem vínculo com você)",
-                "Página acessada e botões clicados",
-                "Data e hora do acesso",
-                "Cidade e estado aproximados (via IP, não armazenamos o IP)",
+                "Identificador aleatório de sessão (gerado a cada nova sessão, sem vínculo com sua identidade)",
+                "Páginas acessadas e botões clicados",
+                "Data e hora dos acessos",
+                "Cidade e estado aproximados — obtidos via consulta à API de geolocalização por IP; o endereço IP completo não é armazenado",
                 "Navegador e sistema operacional (user agent)",
-                "Origem do acesso (referrer)",
+                "Origem da visita (referrer) e parâmetros de campanha (UTM), quando presentes na URL",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="text-brand-500 mt-0.5 shrink-0">*</span>
@@ -105,9 +110,9 @@ export function CookiePolicyPage() {
             </h2>
             <ul className="space-y-2">
               {[
-                "Nome, e-mail, CPF ou qualquer dado de identificação pessoal",
+                "Nome, e-mail, CPF ou qualquer outro dado de identificação direta",
                 "Endereço IP completo",
-                "Dados de formulários ou senhas",
+                "Dados de formulários, senhas ou informações financeiras",
                 "Histórico de navegação em outros sites",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
@@ -122,12 +127,12 @@ export function CookiePolicyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-slate-200 mb-3">
-              Por quanto tempo os dados são armazenados?
+              Compartilhamento com terceiros
             </h2>
             <p>
-              Os registros de acesso são mantidos por tempo indeterminado para fins de análise
-              histórica, mas não contêm nenhuma informação que permita identificar você
-              individualmente.
+              As informações coletadas não são compartilhadas, vendidas ou cedidas a terceiros
+              para nenhuma finalidade. O tratamento ocorre exclusivamente no âmbito da operação
+              e análise interna deste site.
             </p>
           </section>
 
@@ -135,13 +140,13 @@ export function CookiePolicyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-slate-200 mb-3">
-              Armazenamento local
+              Por quanto tempo os dados são mantidos?
             </h2>
             <p>
-              Além dos cookies, utilizamos o <span className="text-slate-300">localStorage</span> do
-              navegador para salvar sua preferência de consentimento, e o{" "}
-              <span className="text-slate-300">sessionStorage</span> para armazenar temporariamente
-              os dados de geolocalização durante a sessão, evitando múltiplas chamadas à API.
+              Os registros são mantidos pelo período necessário para fins de análise estatística
+              e histórica relacionados à operação e evolução do site. Por não conterem dados de
+              identificação direta, a retenção é necessária para garantir a integridade das
+              análises ao longo do tempo.
             </p>
           </section>
 
@@ -149,14 +154,62 @@ export function CookiePolicyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-slate-200 mb-3">
-              Seus direitos
+              Armazenamento local no navegador
+            </h2>
+            <p className="mb-3">
+              Além dos registros enviados ao servidor, utilizamos o armazenamento local do navegador:
+            </p>
+            <ul className="space-y-2">
+              {[
+                "localStorage — armazena sua preferência de consentimento (\"aceito\" ou \"recusado\"), de forma que o aviso não seja exibido novamente.",
+                "sessionStorage — armazena temporariamente o identificador de sessão e os dados de geolocalização durante a visita, evitando chamadas repetidas à API. Esses dados são apagados automaticamente ao fechar a aba ou o navegador.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-brand-500 mt-0.5 shrink-0">*</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="border-t border-white/5" />
+
+          <section>
+            <h2 className="text-base font-semibold text-slate-200 mb-3">
+              Base legal (LGPD)
             </h2>
             <p>
-              A qualquer momento você pode limpar os dados armazenados pelo site acessando as
-              configurações de privacidade do seu navegador e limpando cookies e dados de sites
-              para este domínio. Isso irá redefinir sua preferência de consentimento e os dados
-              de sessão serão removidos.
+              O tratamento de dados descrito nesta política é realizado com base no{" "}
+              <span className="text-slate-300">legítimo interesse</span> do titular do site
+              (art. 7º, IX da Lei nº 13.709/2018 — LGPD), para fins de análise estatística da
+              operação e melhoria do site, com coleta restrita ao mínimo necessário e sem
+              impacto sobre os direitos e liberdades fundamentais dos usuários.
             </p>
+          </section>
+
+          <div className="border-t border-white/5" />
+
+          <section>
+            <h2 className="text-base font-semibold text-slate-200 mb-3">
+              Seus direitos e como revogar o consentimento
+            </h2>
+            <p className="mb-3">
+              A qualquer momento você pode revogar sua preferência de consentimento e remover
+              os dados armazenados localmente pelo site. Para isso:
+            </p>
+            <ul className="space-y-2">
+              {[
+                "No seu navegador, acesse Configurações → Privacidade e segurança → Dados do site.",
+                "Localize este domínio e clique em \"Limpar\" ou \"Excluir\".",
+                "Isso apagará o registro de consentimento (localStorage) e os dados temporários de sessão (sessionStorage).",
+                "Na próxima visita, o aviso de cookies será exibido novamente.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-brand-500 mt-0.5 shrink-0">*</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </section>
 
         </div>
