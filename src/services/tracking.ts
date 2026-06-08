@@ -6,12 +6,24 @@ import { hasConsent } from "./consent";
 
 interface GeoData {
   city: string;
-  region: string;
-  regionName: string;
+  region: string;        // código do estado (ex: "PB")
+  regionName: string;    // nome completo do estado (ex: "Paraíba")
   country: string;
   countryCode: string;
   lat: number;
   lon: number;
+}
+
+// Formato retornado pela ipwho.is
+interface IpWhoResponse {
+  success: boolean;
+  city: string;
+  region: string;         // nome completo do estado
+  region_code: string;    // código do estado
+  country: string;
+  country_code: string;
+  latitude: number;
+  longitude: number;
 }
 
 // ── Session ID (único por aba/sessão) ──────────────────
@@ -37,12 +49,23 @@ async function getGeoData(): Promise<GeoData | null> {
   }
 
   try {
-    const response = await fetch(
-      "http://ip-api.com/json/?fields=city,region,regionName,country,countryCode,lat,lon"
-    );
+    // ipwho.is: gratuito, sem limite diário, usa HTTPS (necessário em sites HTTPS)
+    const response = await fetch("https://ipwho.is/");
     if (!response.ok) return null;
 
-    const data: GeoData = await response.json();
+    const raw: IpWhoResponse = await response.json();
+    if (!raw.success) return null;
+
+    const data: GeoData = {
+      city: raw.city,
+      region: raw.region_code,    // código (ex: "PB")
+      regionName: raw.region,     // nome (ex: "Paraíba")
+      country: raw.country,
+      countryCode: raw.country_code,
+      lat: raw.latitude,
+      lon: raw.longitude,
+    };
+
     geoCache = data;
     sessionStorage.setItem("tglinks_geo", JSON.stringify(data));
     return data;
