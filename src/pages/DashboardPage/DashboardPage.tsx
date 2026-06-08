@@ -9,7 +9,6 @@ import {
   getClicksBySource,
   getTimeline,
   getUniqueSessions,
-  getReferrers,
   type ClickRecord,
   type PageViewRecord,
   type ButtonStats,
@@ -18,6 +17,7 @@ import {
   type TimelinePoint,
   type DateRange,
 } from "../../services/analytics";
+
 
 
 // ── Metric Descriptions ────────────────────────────────
@@ -510,7 +510,6 @@ export function DashboardPage() {
   const [sourceStats, setSourceStats] = useState<SourceStats[]>([]);
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [sessions, setSessions] = useState(0);
-  const [referrers, setReferrers] = useState<{ referrer: string; count: number }[]>([]);
 
   const dashboardRef = useRef<HTMLDivElement>(null);
 
@@ -532,7 +531,6 @@ export function DashboardPage() {
       setSourceStats(getClicksBySource(pvData));
       setTimeline(getTimeline(clicksData, pvData, queryParam));
       setSessions(getUniqueSessions(clicksData, pvData));
-      setReferrers(getReferrers(clicksData, pvData));
 
     } catch (err) {
       console.error("[dashboard] Error loading data:", err);
