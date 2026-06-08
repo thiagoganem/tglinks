@@ -26,6 +26,12 @@ interface IpWhoResponse {
   longitude: number;
 }
 
+export interface UtmData {
+  source: string;   // ex: "instagram", "qrcode", "google", "direct"
+  medium: string;   // ex: "bio", "story", "print", "organic"
+  campaign: string; // ex: "lancamento", ""
+}
+
 // ── Session ID (único por aba/sessão) ──────────────────
 
 const SESSION_ID = crypto.randomUUID();
@@ -74,6 +80,69 @@ async function getGeoData(): Promise<GeoData | null> {
   }
 }
 
+// ── UTM / Source Detection ─────────────────────────────
+
+/**
+ * Lê os parâmetros UTM da URL e persiste na sessão.
+ * Deve ser chamado uma vez ao carregar a página.
+ * Se não houver UTM, tenta inferir a origem pelo referrer.
+ */
+export function captureUtm(): UtmData {
+  // Já capturado nesta sessão?
+  const cached = sessionStorage.getItem("tglinks_utm");
+  if (cached) {
+    try { return JSON.parse(cached); } catch { /* ignore */ }
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const utmSource   = params.get("utm_source")   ?? "";
+  const utmMedium   = params.get("utm_medium")   ?? "";
+  const utmCampaign = params.get("utm_campaign") ?? "";
+
+  let source   = utmSource;
+  let medium   = utmMedium;
+  const campaign = utmCampaign;
+
+  // Se não tem UTM explícito, infere pelo referrer
+  if (!source) {
+    const ref = document.referrer;
+    if (!ref) {
+      source = "direct";
+      medium = "none";
+    } else if (ref.includes("instagram.com")) {
+      source = "instagram";
+      medium = "social";
+    } else if (ref.includes("google.com")) {
+      source = "google";
+      medium = "organic";
+    } else if (ref.includes("facebook.com") || ref.includes("fb.com")) {
+      source = "facebook";
+      medium = "social";
+    } else if (ref.includes("twitter.com") || ref.includes("x.com")) {
+      source = "twitter";
+      medium = "social";
+    } else if (ref.includes("whatsapp.com")) {
+      source = "whatsapp";
+      medium = "messaging";
+    } else if (ref.includes("t.co")) {
+      source = "twitter";
+      medium = "social";
+    } else {
+      // Referrer externo desconhecido — extrai só o domínio
+      try {
+        source = new URL(ref).hostname.replace("www.", "");
+      } catch {
+        source = ref;
+      }
+      medium = "referral";
+    }
+  }
+
+  const utm: UtmData = { source, medium, campaign };
+  sessionStorage.setItem("tglinks_utm", JSON.stringify(utm));
+  return utm;
+}
+
 // ── Tracking Functions ─────────────────────────────────
 
 /**
@@ -89,6 +158,7 @@ export async function trackClick(
 
   try {
     const geo = await getGeoData();
+    const utm = captureUtm();
 
     const docRef = await addDoc(collection(db, "clicks"), {
       buttonLabel,
@@ -97,6 +167,7 @@ export async function trackClick(
       sessionId: SESSION_ID,
       userAgent: navigator.userAgent,
       referrer: document.referrer || "direct",
+      utm,
       region: geo
         ? {
             city: geo.city,
@@ -125,6 +196,7 @@ export async function trackPageView(): Promise<void> {
 
   try {
     const geo = await getGeoData();
+    const utm = captureUtm();
 
     const docRef = await addDoc(collection(db, "pageviews"), {
       page: window.location.pathname,
@@ -132,6 +204,7 @@ export async function trackPageView(): Promise<void> {
       sessionId: SESSION_ID,
       userAgent: navigator.userAgent,
       referrer: document.referrer || "direct",
+      utm,
       region: geo
         ? {
             city: geo.city,

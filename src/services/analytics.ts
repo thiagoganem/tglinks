@@ -10,6 +10,12 @@ import { db } from "../lib/firebase";
 
 // ── Types ──────────────────────────────────────────────
 
+export interface UtmData {
+  source: string;
+  medium: string;
+  campaign: string;
+}
+
 export interface ClickRecord {
   buttonLabel: string;
   buttonUrl: string;
@@ -17,6 +23,7 @@ export interface ClickRecord {
   sessionId: string;
   userAgent: string;
   referrer: string;
+  utm?: UtmData;
   region: {
     city: string;
     state: string;
@@ -34,6 +41,7 @@ export interface PageViewRecord {
   sessionId: string;
   userAgent: string;
   referrer: string;
+  utm?: UtmData;
   region: ClickRecord["region"];
 }
 
@@ -45,6 +53,15 @@ export interface ButtonStats {
 
 export interface RegionStats {
   location: string;
+  count: number;
+  percentage: number;
+}
+
+export interface SourceStats {
+  source: string;   // chave bruta (ex: "instagram")
+  medium: string;   // chave bruta (ex: "bio")
+  label: string;    // label legível (ex: "Instagram")
+  detail: string;   // detalhe do canal (ex: "Bio / Link", "Story", "QR Code")
   count: number;
   percentage: number;
 }
@@ -309,4 +326,76 @@ export function getReferrers(
   }
 
   return result.sort((a, b) => b.count - a.count).slice(0, 10);
+}
+
+// ── Source labels ──────────────────────────────────────
+
+const SOURCE_LABELS: Record<string, string> = {
+  instagram: "Instagram",
+  google: "Google",
+  facebook: "Facebook",
+  twitter: "Twitter / X",
+  whatsapp: "WhatsApp",
+  qrcode: "QR Code",
+  direct: "Acesso Direto",
+};
+
+const MEDIUM_LABELS: Record<string, string> = {
+  bio: "Bio / Link na Bio",
+  story: "Stories",
+  post: "Post",
+  reel: "Reels",
+  print: "Impresso",
+  social: "Rede Social",
+  organic: "Busca Orgânica",
+  messaging: "Mensagem",
+  referral: "Referência",
+  none: "Direto / App",
+};
+
+function sourceLabel(source: string): string {
+  return SOURCE_LABELS[source] ?? source.charAt(0).toUpperCase() + source.slice(1);
+}
+
+function mediumLabel(medium: string): string {
+  return MEDIUM_LABELS[medium] ?? medium;
+}
+
+/**
+ * Agrupa pageviews por origem (utm.source + utm.medium).
+ * Usa os pageviews pois representam cada sessão única de entrada.
+ */
+export function getClicksBySource(
+  pageviews: PageViewRecord[]
+): SourceStats[] {
+  const map = new Map<string, { source: string; medium: string; count: number }>();
+
+  for (const pv of pageviews) {
+    const source = pv.utm?.source || "direct";
+    const medium = pv.utm?.medium || "none";
+    const key    = `${source}|${medium}`;
+
+    const existing = map.get(key);
+    if (existing) {
+      existing.count++;
+    } else {
+      map.set(key, { source, medium, count: 1 });
+    }
+  }
+
+  const total  = pageviews.length;
+  const result: SourceStats[] = [];
+
+  for (const [, { source, medium, count }] of map) {
+    result.push({
+      source,
+      medium,
+      label:  sourceLabel(source),
+      detail: mediumLabel(medium),
+      count,
+      percentage: total > 0 ? Math.round((count / total) * 100) : 0,
+    });
+  }
+
+  return result.sort((a, b) => b.count - a.count);
 }

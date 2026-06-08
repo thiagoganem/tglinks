@@ -6,6 +6,7 @@ import {
   getPageViews,
   getClicksByButton,
   getClicksByRegion,
+  getClicksBySource,
   getTimeline,
   getUniqueSessions,
   getReferrers,
@@ -13,9 +14,11 @@ import {
   type PageViewRecord,
   type ButtonStats,
   type RegionStats,
+  type SourceStats,
   type TimelinePoint,
   type DateRange,
 } from "../../services/analytics";
+
 
 // ── Metric Descriptions ────────────────────────────────
 
@@ -504,11 +507,10 @@ export function DashboardPage() {
   const [pageviews, setPageviews] = useState<PageViewRecord[]>([]);
   const [buttonStats, setButtonStats] = useState<ButtonStats[]>([]);
   const [regionStats, setRegionStats] = useState<RegionStats[]>([]);
+  const [sourceStats, setSourceStats] = useState<SourceStats[]>([]);
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [sessions, setSessions] = useState(0);
-  const [referrers, setReferrers] = useState<
-    { referrer: string; count: number }[]
-  >([]);
+  const [referrers, setReferrers] = useState<{ referrer: string; count: number }[]>([]);
 
   const dashboardRef = useRef<HTMLDivElement>(null);
 
@@ -527,9 +529,11 @@ export function DashboardPage() {
       setPageviews(pvData);
       setButtonStats(getClicksByButton(clicksData));
       setRegionStats(getClicksByRegion(clicksData));
+      setSourceStats(getClicksBySource(pvData));
       setTimeline(getTimeline(clicksData, pvData, queryParam));
       setSessions(getUniqueSessions(clicksData, pvData));
       setReferrers(getReferrers(clicksData, pvData));
+
     } catch (err) {
       console.error("[dashboard] Error loading data:", err);
     } finally {
@@ -1003,35 +1007,80 @@ export function DashboardPage() {
               <TimelineChart data={timeline} />
             </div>
 
-            {/* Referrers */}
+            {/* Origem dos Visitantes */}
             <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-3 sm:p-6">
-              <h2 className="text-sm font-semibold text-white mb-4 sm:mb-5 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-violet-400" />
-                Top Referrers
-              </h2>
-              <div className="space-y-2">
-                {referrers.map((ref) => (
-                  <div
-                    key={ref.referrer}
-                    className="flex items-center justify-between py-2 border-b border-white/5 last:border-0"
-                  >
-                    <span className="text-xs sm:text-sm text-slate-300 truncate max-w-[70%]">
-                      {ref.referrer === "direct"
-                        ? "🔗 Acesso direto"
-                        : ref.referrer}
-                    </span>
-                    <span className="text-xs sm:text-sm text-slate-500 tabular-nums">
-                      {ref.count}
-                    </span>
+              <div className="mb-4 sm:mb-5">
+                <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-violet-400" />
+                  Origem dos Visitantes
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  De onde os usuários chegaram ao site — baseado em UTM params e referrer
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {sourceStats.map((src, i) => {
+                  const colors = [
+                    "from-violet-500 to-violet-400",
+                    "from-brand-500 to-brand-400",
+                    "from-emerald-500 to-emerald-400",
+                    "from-amber-500 to-amber-400",
+                    "from-sky-500 to-sky-400",
+                    "from-rose-500 to-rose-400",
+                  ];
+                  const color = colors[i % colors.length];
+
+                  return (
+                    <div key={`${src.source}|${src.medium}`}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-xs sm:text-sm font-medium text-slate-200 truncate">
+                            {src.label}
+                          </span>
+                          <span className="hidden sm:inline-flex text-[10px] text-slate-500 bg-white/5 border border-white/8 rounded-full px-2 py-0.5 shrink-0">
+                            {src.detail}
+                          </span>
+                        </div>
+                        <span className="text-xs text-slate-400 tabular-nums shrink-0 ml-2">
+                          {src.count}{" "}
+                          <span className="text-slate-600">({src.percentage}%)</span>
+                        </span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700 ease-out`}
+                          style={{ width: `${Math.max(src.percentage, 2)}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {sourceStats.length === 0 && (
+                  <div className="py-6 text-center">
+                    <p className="text-sm text-slate-500">Nenhum dado disponível</p>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Dados aparecem após novos acessos com o tracking ativo
+                    </p>
                   </div>
-                ))}
-                {referrers.length === 0 && (
-                  <p className="text-sm text-slate-500 text-center py-4">
-                    Nenhum dado disponível
-                  </p>
                 )}
               </div>
+
+              {/* Legenda de como usar UTMs */}
+              {sourceStats.length > 0 && (
+                <div className="mt-5 pt-4 border-t border-white/5">
+                  <p className="text-[10px] text-slate-600 leading-relaxed">
+                    <span className="text-slate-500 font-medium">Dica:</span> Para rastrear QR Codes e links do Instagram, adicione{" "}
+                    <code className="text-brand-500/80 bg-brand-500/10 px-1 py-0.5 rounded">?utm_source=qrcode</code>{" "}
+                    ou{" "}
+                    <code className="text-brand-500/80 bg-brand-500/10 px-1 py-0.5 rounded">?utm_source=instagram&utm_medium=bio</code>{" "}
+                    ao final da URL.
+                  </p>
+                </div>
+              )}
             </div>
+
 
             {/* Footer */}
             <footer className="mt-8 sm:mt-10 text-center">

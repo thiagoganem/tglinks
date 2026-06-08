@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { RedesPage } from "./pages";
+import { RedesPage, CookiePolicyPage } from "./pages";
 import { DashboardPage } from "./pages/DashboardPage";
+
 
 function App() {
   return (
@@ -8,7 +9,9 @@ function App() {
       <Routes>
         <Route path="/redes" element={<RedesPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/cookies" element={<CookiePolicyPage />} />
         <Route path="*" element={<Navigate to="/redes" replace />} />
+
       </Routes>
     </BrowserRouter>
   );

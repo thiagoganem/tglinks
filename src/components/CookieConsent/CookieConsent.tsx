@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getConsentStatus, grantConsent } from "../../services/consent";
 import { trackPageView } from "../../services/tracking";
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const status = getConsentStatus();
     if (status === null) {
-      // Mostra imediatamente — sem delay
       setVisible(true);
     }
   }, []);
@@ -36,13 +37,11 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    /* Overlay bloqueante — cobre toda a tela, impede cliques no fundo */
     <div
-      className={`fixed inset-0 z-[999] flex items-end sm:items-center justify-center p-4 sm:p-6 transition-all duration-350 ${
+      className={`fixed inset-0 z-[999] flex items-end sm:items-center justify-center p-4 sm:p-6 transition-opacity duration-350 ${
         exiting ? "opacity-0" : "opacity-100"
       }`}
       style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.65)" }}
-      /* Impede fechar ao clicar fora */
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div
@@ -51,54 +50,22 @@ export function CookieConsent() {
         }`}
         style={{ animation: exiting ? undefined : "consentSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both" }}
       >
-        {/* Icon + Title */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-brand-500/15 flex items-center justify-center shrink-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-brand-400"
-            >
-              <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
-              <path d="M8.5 8.5v.01" />
-              <path d="M16 15.5v.01" />
-              <path d="M12 12v.01" />
-              <path d="M11 17v.01" />
-              <path d="M7 14v.01" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-white">Aviso de Cookies</h3>
-            <p className="text-xs text-slate-500">Precisamos da sua confirmação</p>
-          </div>
-        </div>
-
-        {/* Body */}
-        <p className="text-sm text-slate-400 leading-relaxed mb-6">
-          Este site utiliza cookies anônimos para estatísticas de navegação.{" "}
-          <span className="text-slate-300">Nenhum dado pessoal é coletado ou compartilhado.</span>
+        {/* Title */}
+        <h3 className="text-base font-bold text-white mb-1">Aviso de Cookies</h3>
+        <p className="text-sm text-slate-400 leading-relaxed mb-5">
+          Este site utiliza cookies anônimos para estatísticas de navegação.
+          Nenhum dado pessoal é coletado ou compartilhado.
         </p>
 
-        {/* Pill de detalhes */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {["📊 Estatísticas anônimas", "🔒 Sem dados pessoais", "🚫 Sem rastreamento de terceiros"].map((item) => (
-            <span
-              key={item}
-              className="text-xs text-slate-400 bg-white/5 border border-white/8 rounded-full px-3 py-1"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
+        {/* Link para política completa */}
+        <button
+          onClick={() => navigate("/cookies")}
+          className="text-xs text-brand-400 hover:text-brand-300 underline underline-offset-2 transition-colors duration-150 mb-6 block"
+        >
+          Ler política de cookies completa →
+        </button>
 
-        {/* CTA único — sem opção de recusar */}
+        {/* CTA único */}
         <button
           id="cookie-consent-accept"
           onClick={handleOk}
