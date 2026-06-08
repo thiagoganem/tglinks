@@ -32,9 +32,22 @@ export interface UtmData {
   campaign: string; // ex: "lancamento", ""
 }
 
-// ── Session ID (único por aba/sessão) ──────────────────
+// ── Session ID (persiste na sessão da aba, reseta ao fechar) ──
+//
+// Usando sessionStorage: sobrevive ao F5, mas é zerado ao fechar a aba.
+// Isso garante que F5 = mesma sessão (+1 pageview), não uma nova sessão.
 
-const SESSION_ID = crypto.randomUUID();
+const SESSION_KEY = "tglinks_session_id";
+
+function getOrCreateSessionId(): string {
+  const existing = sessionStorage.getItem(SESSION_KEY);
+  if (existing) return existing;
+  const newId = crypto.randomUUID();
+  sessionStorage.setItem(SESSION_KEY, newId);
+  return newId;
+}
+
+const SESSION_ID = getOrCreateSessionId();
 
 // ── Cache de geolocalização ────────────────────────────
 
