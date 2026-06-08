@@ -43,42 +43,85 @@ let geoCache: GeoData | null = null;
 async function getGeoData(): Promise<GeoData | null> {
   if (geoCache) return geoCache;
 
-  // Tenta ler do sessionStorage primeiro
+  // Tenta ler do sessionStorage — valida que os campos existem antes de usar
   const cached = sessionStorage.getItem("tglinks_geo");
   if (cached) {
     try {
-      geoCache = JSON.parse(cached);
-      return geoCache;
+      const parsed = JSON.parse(cached);
+      // Garante que o cache é válido (não é null nem objeto incompleto)
+      if (parsed && parsed.city && parsed.regionName) {
+        geoCache = parsed;
+        return geoCache;
+      } else {
+        // Cache inválido (ex: salvo antes do fix) — descarta
+        sessionStorage.removeItem("tglinks_geo");
+      }
     } catch {
-      // ignore parse errors
+      sessionStorage.removeItem("tglinks_geo");
     }
   }
 
+  // Tenta ipwho.is (HTTPS gratuito)
+  const data = await fetchIpWhoIs() ?? await fetchIpApiCo();
+
+  if (data) {
+    geoCache = data;
+    sessionStorage.setItem("tglinks_geo", JSON.stringify(data));
+  }
+
+  return data;
+}
+
+/** Remove prefixos como "State of ", "Province of " etc. retornados por algumas APIs */
+function cleanRegionName(name: string): string {
+  return name
+    .replace(/^State of\s+/i, "")
+    .replace(/^Province of\s+/i, "")
+    .replace(/^Region of\s+/i, "")
+    .trim();
+}
+
+async function fetchIpWhoIs(): Promise<GeoData | null> {
   try {
-    // ipwho.is: gratuito, sem limite diário, usa HTTPS (necessário em sites HTTPS)
     const response = await fetch("https://ipwho.is/");
     if (!response.ok) return null;
-
     const raw: IpWhoResponse = await response.json();
-    if (!raw.success) return null;
-
-    const data: GeoData = {
+    if (!raw.success || !raw.city) return null;
+    return {
       city: raw.city,
-      region: raw.region_code,    // código (ex: "PB")
-      regionName: raw.region,     // nome (ex: "Paraíba")
+      region: raw.region_code,
+      regionName: cleanRegionName(raw.region),
       country: raw.country,
       countryCode: raw.country_code,
       lat: raw.latitude,
       lon: raw.longitude,
     };
-
-    geoCache = data;
-    sessionStorage.setItem("tglinks_geo", JSON.stringify(data));
-    return data;
   } catch {
     return null;
   }
 }
+
+async function fetchIpApiCo(): Promise<GeoData | null> {
+  try {
+    // ipapi.co: HTTPS gratuito, sem autenticação
+    const response = await fetch("https://ipapi.co/json/");
+    if (!response.ok) return null;
+    const raw = await response.json();
+    if (!raw.city || raw.error) return null;
+    return {
+      city: raw.city,
+      region: raw.region_code ?? "",
+      regionName: raw.region ?? "",
+      country: raw.country_name ?? raw.country ?? "",
+      countryCode: raw.country ?? "",
+      lat: raw.latitude ?? 0,
+      lon: raw.longitude ?? 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
 
 // ── UTM / Source Detection ─────────────────────────────
 
