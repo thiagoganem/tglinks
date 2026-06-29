@@ -131,3 +131,27 @@ export function SecurityIcon({ className = "w-7 h-7" }: IconProps) {
     </svg>
   );
 }
+
+// Cristão — Cruz latina com brilho dourado
+export function ChristianIcon({ className = "w-7 h-7" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="christian-g" x1="8" y1="1" x2="16" y2="23" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#fbbf24" />
+          <stop offset="1" stopColor="#d97706" />
+        </linearGradient>
+        <radialGradient id="christian-glow" cx="12" cy="8" r="6" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#fde68a" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#fde68a" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* Brilho atrás da cruz */}
+      <circle cx="12" cy="8" r="6" fill="url(#christian-glow)" />
+      {/* Haste vertical */}
+      <rect x="10.2" y="3" width="3.6" height="18" rx="1.2" fill="url(#christian-g)" opacity="0.9" />
+      {/* Haste horizontal */}
+      <rect x="5.5" y="6.5" width="13" height="3.6" rx="1.2" fill="url(#christian-g)" opacity="0.9" />
+    </svg>
+  );
+}

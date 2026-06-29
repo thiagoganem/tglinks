@@ -1,1 +1,1 @@
-export { AnimalIcon, FibromyalgiaIcon, OncologyIcon, AutismIcon, SecurityIcon } from "./CauseIcons";
+export { AnimalIcon, FibromyalgiaIcon, OncologyIcon, AutismIcon, SecurityIcon, ChristianIcon } from "./CauseIcons";

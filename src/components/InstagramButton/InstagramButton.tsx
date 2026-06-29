@@ -38,7 +38,7 @@ export function InstagramButton({ label, url, delay }: InstagramButtonProps) {
       </span>
 
       <span className="text-xs text-brand-400 group-hover:text-brand-300 transition-colors duration-300">
-        @thiagoganem.cristao
+        @thi.ganem
       </span>
     </a>
   );
